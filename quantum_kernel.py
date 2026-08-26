@@ -6,7 +6,10 @@ Uses chunked parallel processing for kernel matrix computation.
 """
 
 import numpy as np
-import pennylane as qml
+try:
+    import pennylane as qml
+except ImportError:
+    qml = None
 import multiprocessing
 import time
 import json
