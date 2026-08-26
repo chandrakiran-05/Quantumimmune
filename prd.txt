@@ -1,0 +1,374 @@
+Product Requirements Document (PRD)
+Project Name
+
+QuantumImmune Dx — Quantum-Inspired ML System for Early Multi-Autoimmune Disease Detection
+
+1. Problem Statement
+
+Autoimmune diseases (80+ known types) are notoriously hard to diagnose early because symptoms overlap across conditions and lab markers are non-specific in early stages. Misdiagnosis/delay averages 4-7 years across common autoimmune diseases. Classical ML models struggle with high-dimensional, overlapping, imbalanced biomarker data. This project explores whether quantum-kernel-based ML (simulated via parallelized classical computation) can improve early multi-disease classification.
+
+2. Objective
+
+Build a prototype that takes patient lab/clinical inputs and predicts the likelihood and type of autoimmune disease (across 10-15 categories) at an early stage, using a Quantum Support Vector Machine (QSVM) pipeline, benchmarked against classical ML baselines.
+
+3. Scope
+In Scope
+Multi-class classification across 10-15 autoimmune disease types
+Quantum kernel feature mapping (simulated) for early-stage detection
+Parallelized quantum circuit/kernel computation on classical CPU
+Comparison dashboard: Classical ML vs Quantum-Kernel ML
+Web-based demo interface (form input → prediction output)
+Out of Scope (for hackathon prototype)
+Real quantum hardware execution
+Imaging-based diagnosis (MRI, ultrasound, radiographs)
+Genomic/proteomic sequencing data
+Clinical deployment / regulatory compliance (not a medical device)
+Real-time EHR integration
+4. Target Diseases (10-15 Categories)
+
+Chosen for: (a) publicly available structured datasets, (b) distinct lab biomarker signatures, (c) relevance across age groups.
+
+#	Disease	Category	Primary Age Group
+1	Rheumatoid Arthritis (RA)	Joint/Systemic	Adult
+2	Systemic Lupus Erythematosus (SLE)	Systemic	Adult (esp. women 15-45)
+3	Type 1 Diabetes Mellitus	Endocrine	Child/Young Adult
+4	Hashimoto's Thyroiditis	Endocrine	Adult
+5	Graves' Disease	Endocrine	Adult
+6	Multiple Sclerosis (MS)	Neurological	Young Adult
+7	Psoriasis / Psoriatic Arthritis	Dermatological/Joint	All ages
+8	Celiac Disease	Gastrointestinal	All ages, esp. children
+9	Inflammatory Bowel Disease (Crohn's/Ulcerative Colitis)	Gastrointestinal	Young Adult
+10	Sjögren's Syndrome	Exocrine/Systemic	Adult (esp. women)
+11	Ankylosing Spondylitis	Joint/Spine	Young Adult (esp. men)
+12	Vitiligo	Dermatological	All ages
+13	Autoimmune Hepatitis	Hepatic	All ages
+14	Myasthenia Gravis	Neuromuscular	All ages
+15	Guillain-Barré Syndrome	Neurological	All ages
+
+(Trim to 10 if 15 is too heavy for your timeline — RA, SLE, T1D, Hashimoto's, Graves', MS, Psoriasis, Celiac, IBD, Sjögren's cover the widest biomarker diversity.)
+
+5. Dataset Requirements
+5.1 Type of Data Needed
+
+Structured, tabular clinical/lab data — NOT imaging, NOT genomic sequencing (too heavy to encode into a small qubit simulation).
+
+5.2 Required Feature Categories (common across diseases, for cross-disease modeling)
+Feature Group	Examples
+Demographics	Age, sex, BMI
+General inflammation markers	CRP, ESR
+Autoantibody panel	ANA, RF, Anti-CCP, Anti-dsDNA, Anti-TPO, Anti-TG, Anti-tTG (celiac), Anti-AChR (myasthenia)
+Organ-specific labs	TSH/T3/T4 (thyroid), Fasting glucose/HbA1c (diabetes), Liver enzymes ALT/AST (hepatitis), Complement C3/C4 (lupus)
+Symptom/clinical indicators	Joint pain score, fatigue score, skin lesion presence, GI symptom score, muscle weakness score
+Genetic markers (optional, if available)	HLA-B27, HLA-DR4
+5.3 Data Structure Needed
+One row per patient
+Label column = disease type (multi-class) or disease vs. healthy (binary, per-disease)
+8-15 numeric/categorical features per patient (small enough for 8-15 qubit simulation)
+Balanced or near-balanced classes preferred (QML papers show quantum kernels can help with imbalance, but don't rely on this for a hackathon demo)
+5.4 Where to Source It
+Source	What You'll Find
+Kaggle	Individual disease datasets — RA, SLE, diabetes, thyroid, psoriasis lab datasets
+UCI ML Repository	Thyroid disease dataset, diabetes (Pima), liver disorders
+Synthetic generation	For diseases without public datasets, generate synthetic data using realistic lab-value ranges per disease (with clear disclosure this is synthetic) — this is acceptable and common in hackathons
+PhysioNet / MIMIC-adjacent	If you need broader clinical records (requires credentialed access, may be too slow to get)
+5.5 Recommended Practical Approach
+
+Given hackathon time constraints, combine 3-5 real Kaggle/UCI datasets for your best-covered diseases (RA, Diabetes, Thyroid, Lupus, Psoriasis) and synthetically generate the remaining 5-10 using clinically realistic feature distributions (mean/std per marker per disease, sourced from published clinical literature ranges). Clearly label real vs. synthetic in your submission — judges respect transparency over silently fabricated legitimacy.
+
+6. ML/Quantum Method
+Primary model: Quantum Kernel SVM (multi-class via one-vs-rest)
+Feature map: Angle encoding (ZZFeatureMap or custom) — 8-15 features → 8-15 qubits
+Simulator: PennyLane lightning.qubit or Qiskit Aer (parallelized statevector simulation)
+Parallelization: joblib/multiprocessing for N×N kernel matrix computation across CPU cores
+Baseline for comparison: Classical Random Forest + classical SVM on same features
+7. Success Metrics
+Classification accuracy, F1-score (macro, since multi-class) — quantum vs classical
+Kernel computation time: sequential vs parallelized (demonstrates the "parallel processing" story)
+Per-disease confusion matrix (shows where overlap/misclassification happens — realistic and honest)
+8. Deliverables for Hackathon
+Working Streamlit/web app: input form → predicted disease + confidence
+Comparison dashboard: classical vs quantum-kernel accuracy
+Parallel vs sequential runtime benchmark chart
+PRD/technical writeup (this doc) + architecture diagram
+Clear dataset disclosure (real vs synthetic sources)
+9. Risks & Honest Disclosures (state these upfront to judges)
+No real quantum hardware used — quantum circuits are simulated classically
+"Parallel processing" approximates the concurrency principle of quantum computation, not actual quantum speedup
+Some disease data may be synthetic due to public dataset scarcity
+Small dataset sizes may limit generalizability — this is a proof-of-concept, not a clinical tool
+
+Want me to now build the synthetic dataset generator (realistic lab-value distributions per disease) so you have a working 10-15 disease dataset to train on immediately?
+
+No — nothing exists yet. Everything we've discussed so far is a plan (the PRD, the architecture, the theory). You have zero code, zero trained model, and zero dataset assembled right now.
+
+Here's what actually needs to be built, in order:
+
+Component	Status
+Dataset (real + synthetic, 10-15 diseases)	❌ Not created
+Quantum feature map / circuit code	❌ Not written
+Kernel matrix computation (parallelized)	❌ Not written
+SVM training on quantum kernel	❌ Not trained
+Classical baseline model	❌ Not trained
+Streamlit app / frontend	❌ Not built
+
+Nothing is pretrained or downloadable off-the-shelf for "quantum multi-autoimmune disease detection" — this is a novel combination you're assembling from research concepts, not an existing product or library.
+
+What I can actually do for you right now: start building this for real — generate the dataset, write the PennyLane/Qiskit quantum kernel code, train the QSVM + classical baseline, and wire up a working Streamlit app. That's the natural next step given your timeline.
+
+Want me to start scaffolding the actual code and dataset now?
+
+I mean quantum svm exists?
+
+Yes — QSVM as an algorithm/method exists and is implemented in real, usable libraries. That part isn't something you need to invent.
+
+Library	What it gives you
+Qiskit Machine Learning (IBM)	QSVC class — a ready-to-use Quantum SVM you just call .fit() / .predict() on, like scikit-learn
+PennyLane	Quantum kernel functions you build yourself, then plug into sklearn.svm.SVC(kernel='precomputed')
+scikit-learn	The classical SVM machinery underneath — accepts any precomputed kernel, quantum or not
+
+So the method exists, the tools exist, the code pattern is well-established — dozens of papers you saw earlier used exactly these libraries.
+
+What does NOT exist:
+
+A pretrained QSVM model for autoimmune diseases specifically
+A ready dataset for 10-15 autoimmune diseases
+Anyone's already-built "autoimmune QSVM app"
+
+So think of it like this: SVM exists as a concept in scikit-learn, but "your spam filter" doesn't exist until you train one on your data. Same here — QSVM exists as a tool; your specific trained model for your specific 10-15 diseases doesn't exist until you build and train it.
+
+That's genuinely good news for your hackathon — it means you're not inventing quantum computing from scratch, you're applying an established, documented method (QSVC from Qiskit is literally a few lines of code) to a new dataset/problem.
+
+Want me to show you exactly what that Qiskit QSVC code looks like, so you can see how little "quantum expertise" is actually required to use it?
+
+Give me a highly detailed prd
+
+Product Requirements Document (PRD) — v2.0 (Detailed)
+QuantumImmune Dx: Quantum-Kernel ML System for Early Multi-Autoimmune Disease Detection
+1. Document Control
+Field	Value
+Version	2.0 (Detailed)
+Type	Hackathon Prototype PRD
+Status	Draft for Build
+Owner	You / Team
+2. Executive Summary
+
+QuantumImmune Dx is a prototype diagnostic-support tool that classifies patient lab/clinical data into one of 10-15 autoimmune disease categories (or "healthy/non-autoimmune") using a Quantum Support Vector Machine (QSVM). Quantum circuits are simulated classically (no real QPU access), with kernel computation accelerated via multi-core parallel processing. The system is benchmarked against classical ML baselines (Random Forest, classical SVM) to demonstrate where quantum-kernel methods add value.
+
+3. Problem Statement
+3.1 Background
+
+Autoimmune diseases affect ~5-8% of the global population across 80+ distinct conditions. Diagnosis is delayed an average of 4-7 years due to:
+
+Overlapping, non-specific biomarkers (e.g., elevated CRP/ESR appears in dozens of conditions)
+Symptom similarity across diseases in early stages
+Reliance on specialist referral chains before definitive testing
+3.2 Why Existing Classical ML Falls Short (for this specific problem)
+High feature correlation and class overlap in biomarker space reduces separability with standard kernels (linear, RBF)
+Small, imbalanced datasets per rare disease type limit deep learning approaches
+Multi-way marker interactions (e.g., "ANA+ AND low complement AND age<40") are harder to capture with low-order classical kernels
+3.3 Hypothesis Being Tested
+
+Quantum feature maps, which embed data into an exponentially large Hilbert space via entangling circuits, can capture higher-order multi-marker interactions more efficiently than classical kernels — potentially improving separability in overlapping-biomarker, multi-class autoimmune classification, even under simulation.
+
+4. Goals & Non-Goals
+4.1 Goals
+G1: Classify patient data into 10-15 autoimmune disease categories + healthy class
+G2: Demonstrate a working QSVM pipeline (simulated quantum kernel) end-to-end
+G3: Benchmark QSVM vs classical ML (accuracy, F1, confusion matrix)
+G4: Demonstrate parallel processing acceleration of kernel computation (sequential vs multi-core runtime)
+G5: Deliver a usable web demo where a judge can input synthetic patient data and get a live prediction
+4.2 Non-Goals
+NG1: Not a certified/regulated medical device — no clinical claims of diagnostic accuracy
+NG2: Not using real quantum hardware (IBM Quantum, IonQ, etc.) — simulation only
+NG3: Not processing imaging, genomic, or unstructured text data
+NG4: Not designed for production-scale patient volume or real EHR integration
+NG5: Not guaranteeing quantum advantage — the deliverable is the comparison experiment, not a proven superiority claim
+5. User Personas
+Persona	Need
+Hackathon Judge	Wants to see a working demo, a clear technical explanation, and honest limitations
+Clinician (hypothetical future user)	Wants a decision-support second opinion for ambiguous early-stage cases
+Patient (hypothetical future user)	Wants earlier awareness of possible autoimmune risk to seek specialist care sooner
+6. Target Disease Classes (Final List — 12 diseases + Healthy)
+#	Disease	Category	Key Biomarkers
+1	Rheumatoid Arthritis	Joint/Systemic	RF, Anti-CCP, CRP, ESR
+2	Systemic Lupus Erythematosus	Systemic	ANA, Anti-dsDNA, Complement C3/C4
+3	Type 1 Diabetes	Endocrine	Fasting glucose, HbA1c, Anti-GAD
+4	Hashimoto's Thyroiditis	Endocrine	TSH, Anti-TPO, Anti-TG
+5	Graves' Disease	Endocrine	TSH (low), T3/T4 (high), TSI
+6	Multiple Sclerosis	Neurological	Oligoclonal bands (proxy score), fatigue score
+7	Psoriatic Arthritis	Dermatological/Joint	CRP, joint pain score, skin lesion flag
+8	Celiac Disease	Gastrointestinal	Anti-tTG, Anti-EMA, GI symptom score
+9	Inflammatory Bowel Disease	Gastrointestinal	CRP, fecal calprotectin (proxy), GI symptom score
+10	Sjögren's Syndrome	Exocrine/Systemic	Anti-Ro/SSA, Anti-La/SSB, dryness score
+11	Ankylosing Spondylitis	Joint/Spine	HLA-B27 flag, ESR, back pain score
+12	Autoimmune Hepatitis	Hepatic	ALT, AST, ANA, IgG level
+13	Healthy/Non-autoimmune	Control class	Normal ranges across all markers
+
+(Trimmed from 15→12+healthy for feasibility; can extend if time allows using the same feature template.)
+
+7. Functional Requirements
+FR1: Data Input
+FR1.1: Web form accepting numeric/categorical clinical inputs (age, sex, ~15 lab markers, symptom scores)
+FR1.2: Input validation (range checks, required fields)
+FR1.3: Option to load a sample/demo patient for quick judge testing
+FR2: Preprocessing
+FR2.1: Normalize all numeric features to [0, π] range for angle encoding
+FR2.2: Encode categorical/binary markers (positive/negative) as 0/1 or angle equivalents
+FR2.3: Handle missing values via imputation (median/mode) with a flag noting imputation occurred
+FR3: Quantum Feature Mapping
+FR3.1: Implement a parameterized quantum circuit (ZZFeatureMap or custom) mapping N features → N qubits
+FR3.2: Include entangling layer (CNOT chain or full entanglement) to capture feature interactions
+FR3.3: Circuit depth configurable (start with depth=2 for simulation speed)
+FR4: Kernel Computation
+FR4.1: Compute quantum kernel (state fidelity) between all pairs of training samples
+FR4.2: Parallelize kernel matrix computation using joblib.Parallel / multiprocessing.Pool
+FR4.3: Cache/save the computed kernel matrix (avoid recomputation on every run)
+FR4.4: Log computation time for sequential vs parallel runs (for benchmark reporting)
+FR5: Model Training
+FR5.1: Train SVC(kernel='precomputed') (scikit-learn) or Qiskit QSVC on the quantum kernel matrix
+FR5.2: Implement one-vs-rest strategy for multi-class (13 classes)
+FR5.3: Train classical baselines: Random Forest, classical SVM (RBF kernel), on identical train/test split
+FR5.4: Save trained models (pickle/joblib) for inference reuse
+FR6: Inference (New Patient Prediction)
+FR6.1: Accept new patient input → preprocess → encode into quantum circuit
+FR6.2: Compute similarity (kernel) between new patient and stored support vectors (parallelized)
+FR6.3: Return predicted class + confidence scores for all 13 classes
+FR6.4: Return top contributing markers (via feature importance from classical baseline, as a proxy explanation since QSVM lacks native feature importance)
+FR7: Comparison Dashboard
+FR7.1: Display accuracy, precision, recall, F1 (macro-averaged) for QSVM vs RF vs classical SVM
+FR7.2: Display confusion matrix per model
+FR7.3: Display kernel computation runtime chart (sequential vs parallel, varying core count)
+FR8: Output/Results UI
+FR8.1: Show predicted disease with confidence bar chart across all classes
+FR8.2: Show disclaimer: "Prototype for research/educational purposes — not a medical diagnosis"
+FR8.3: Option to download prediction report (PDF/JSON)
+8. Non-Functional Requirements
+Requirement	Target
+Inference latency (new patient)	< 5 seconds on laptop CPU
+Training time (full dataset, ~600-1000 rows)	< 30 minutes on laptop
+Qubits used	8-15 (feasible for classical statevector simulation)
+Reproducibility	Fixed random seeds for train/test split and synthetic data generation
+Explainability	Must state simulated-quantum nature clearly in UI, not imply real QPU use
+Portability	Runs on standard laptop (no GPU/cloud dependency required)
+9. Dataset Requirements (Detailed)
+9.1 Data Type
+
+Structured tabular data. One row = one patient. Mixed numeric (labs) + categorical (positive/negative, sex) + ordinal (symptom scores 0-10).
+
+9.2 Feature Schema (Target: ~15 features to stay within qubit-simulation limits)
+Feature	Type	Range/Values
+Age	Numeric	5-85
+Sex	Categorical	M/F
+CRP	Numeric	0-150 mg/L
+ESR	Numeric	0-100 mm/hr
+RF	Binary	Pos/Neg
+Anti-CCP	Binary	Pos/Neg
+ANA titer	Numeric/Ordinal	Neg, 1:80, 1:160, 1:320+
+Anti-dsDNA	Binary	Pos/Neg
+Complement C3	Numeric	Low/Normal
+TSH	Numeric	0.1-10 mIU/L
+Anti-TPO	Binary	Pos/Neg
+Fasting Glucose	Numeric	70-300 mg/dL
+Anti-tTG	Binary	Pos/Neg
+HLA-B27	Binary	Pos/Neg
+Joint pain score	Ordinal	0-10
+Fatigue score	Ordinal	0-10
+GI symptom score	Ordinal	0-10
+Skin lesion flag	Binary	Yes/No
+Label	Categorical	1 of 13 classes
+9.3 Sourcing Strategy
+Source Type	Diseases Covered	Method
+Real public datasets	RA, T1D, Thyroid (Hashimoto's/Graves'), Lupus (partial)	Kaggle, UCI ML Repository
+Literature-informed synthetic generation	MS, Psoriatic Arthritis, IBD, Sjögren's, Ankylosing Spondylitis, Autoimmune Hepatitis	Generate using clinically realistic mean/SD per marker per disease, sourced from published reference ranges
+Healthy control	All	Generate using normal reference lab ranges
+9.4 Synthetic Data Generation Method
+
+For each disease, define a multivariate distribution per feature based on published clinical literature ranges (e.g., "RA patients typically show CRP 20-80 mg/L, RF positive in ~70-80% of cases"). Sample from these distributions with added noise to simulate realistic patient variability. Explicitly log and disclose which rows are synthetic vs real.
+
+9.5 Dataset Size Target
+Minimum: 40-50 patients per class × 13 classes = ~520-650 rows
+Split: 70% train / 15% validation / 15% test
+Stratified sampling to preserve class balance in splits
+10. Technical Architecture
+┌─────────────────────────────┐
+│   Frontend (Streamlit)      │
+│  - Input form                │
+│  - Results dashboard         │
+│  - Comparison charts         │
+└──────────────┬───────────────┘
+               │
+┌──────────────▼───────────────┐
+│   Backend (Python)           │
+│  ┌─────────────────────────┐ │
+│  │ Preprocessing Module     │ │
+│  │ (normalize, encode)      │ │
+│  └───────────┬─────────────┘ │
+│  ┌───────────▼─────────────┐ │
+│  │ Quantum Feature Map      │ │
+│  │ (PennyLane/Qiskit)       │ │
+│  └───────────┬─────────────┘ │
+│  ┌───────────▼─────────────┐ │
+│  │ Kernel Computation       │ │
+│  │ (Parallelized - joblib)  │ │
+│  └───────────┬─────────────┘ │
+│  ┌───────────▼─────────────┐ │
+│  │ QSVM (sklearn SVC        │ │
+│  │ precomputed / Qiskit QSVC)│ │
+│  └───────────┬─────────────┘ │
+│  ┌───────────▼─────────────┐ │
+│  │ Classical Baselines       │ │
+│  │ (RF, classical SVM)       │ │
+│  └───────────┬─────────────┘ │
+│  ┌───────────▼─────────────┐ │
+│  │ Evaluation & Benchmarking│ │
+│  └───────────────────────────┘ │
+└───────────────────────────────┘
+11. Tech Stack
+Layer	Tool
+Language	Python 3.10+
+Quantum simulation	PennyLane (lightning.qubit) or Qiskit Machine Learning (QSVC, Aer simulator)
+Classical ML	scikit-learn
+Parallelization	joblib, multiprocessing
+Data handling	pandas, numpy
+Frontend	Streamlit
+Visualization	matplotlib / plotly
+Model persistence	joblib/pickle
+12. ML Pipeline Detail
+12.1 Training Phase
+Load dataset → split train/val/test (stratified)
+Preprocess (normalize, encode)
+Build quantum feature map circuit (fixed structure, e.g., angle encoding + linear entanglement, depth=2)
+Compute training kernel matrix K_train (N_train × N_train) — parallelized across patient pairs
+Train SVC(kernel='precomputed') on K_train with one-vs-rest for 13 classes
+Train classical RF and classical SVM baselines on same train split
+Evaluate all models on validation set → tune hyperparameters (C, gamma for classical; circuit depth for quantum)
+Final evaluation on held-out test set
+12.2 Inference Phase
+New patient input → preprocess (same pipeline as training)
+Encode into quantum circuit → get state
+Compute kernel between new patient and all (or top-k) support vectors — parallelized
+Feed kernel vector into trained SVM decision function
+Return class probabilities (via probability=True in sklearn SVC, calibrated with Platt scaling)
+Display prediction + confidence
+13. Evaluation Metrics
+Metric	Purpose
+Accuracy	Overall correctness
+Macro F1-score	Fair across all 13 classes (accounts for class imbalance)
+Per-class Precision/Recall	Identify which diseases are hardest to distinguish
+Confusion Matrix	Visualize inter-disease misclassification patterns
+Kernel computation time (sequential vs parallel)	Demonstrate parallelization benefit
+Training time comparison (QSVM vs classical)	Honest tradeoff reporting
+14. Risks & Mitigations
+Risk	Mitigation
+Quantum kernel simulation too slow for 13-class, 500+ patients	Limit qubits to 8-10, use kernel caching, reduce circuit depth
+Synthetic data seen as "made up" by judges	Full transparency doc listing real vs synthetic sources and generation methodology
+QSVM underperforms classical baseline	Reframe as "comparative research exploration," not a superiority claim — this is scientifically honest and still valuable
+Overlapping symptoms across diseases hurt accuracy	Present confusion matrix as an honest finding, tie back to real-world diagnostic difficulty (this strengthens your narrative, doesn't weaken it)
+Time overrun on quantum circuit debugging	Have classical-only version working first as a guaranteed fallback demo
+15. Deliverables Checklist
+ Cleaned + labeled dataset (13 classes, disclosed real/synthetic split)
+ Quantum feature map + kernel computation code (PennyLane/Qiskit)
+ Parallelized kernel matrix computation (benchmarked)
+ Trained QSVM model
+ Trained classical baseline models (RF, SVM)
+ Evaluation report (metrics, confusion matrices, runtime charts)
