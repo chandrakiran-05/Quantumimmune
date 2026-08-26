@@ -96,6 +96,14 @@ def load_all_models():
 def startup_event():
     load_all_models()
 
+@app.get("/")
+def read_root():
+    return {
+        "status": "healthy",
+        "service": "QuantumImmune Dx Backend API",
+        "version": "1.0.0"
+    }
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Pydantic Schemas
 # ──────────────────────────────────────────────────────────────────────────────
