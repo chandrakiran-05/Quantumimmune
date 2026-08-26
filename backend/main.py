@@ -6,7 +6,6 @@ import logging
 import re
 from typing import Dict, Any, List, Optional
 import numpy as np
-import pandas as pd
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware

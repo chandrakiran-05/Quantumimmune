@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "backend/main.py": {
+      "includeFiles": [
+        "models/**",
+        "quantum_kernel.py"
+      ]
+    }
+  }
+}
