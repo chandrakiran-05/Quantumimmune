@@ -15,6 +15,8 @@ import joblib
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("quantum_immune_backend")
 
+# FastAPI app configuration for production deployment on Vercel.
+# Unused dependencies (pennylane, pandas) are excluded to fit under the 500MB function size limit.
 app = FastAPI(
     title="QuantumImmune Dx Backend",
     description="FastAPI Backend for Quantum Kernel SVM clinical decision support.",
