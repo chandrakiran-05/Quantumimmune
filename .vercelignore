@@ -1,8 +1,0 @@
-# Ignore local auxiliary Python scripts to prevent Vercel from building them as serverless functions
-generate_dataset.py
-train_models.py
-run_benchmark.py
-app.py
-
-# Ignore raw data files (only trained models in models/ are needed at runtime)
-data/

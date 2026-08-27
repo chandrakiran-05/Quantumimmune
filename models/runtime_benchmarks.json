@@ -1,10 +1,10 @@
 {
-  "sequential_time": 45.992,
+  "sequential_time": 24.307,
   "sequential_pairs": 5050,
-  "parallel_time": 6.413,
+  "parallel_time": 14.952,
   "parallel_pairs": 5050,
   "n_cores": 16,
-  "speedup": 7.17,
+  "speedup": 1.63,
   "sample_size": 100,
   "max_diff": 0.0
 }

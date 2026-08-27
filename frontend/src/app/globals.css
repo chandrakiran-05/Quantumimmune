@@ -1,115 +1,92 @@
 @import "tailwindcss";
 
 :root {
-  --background-start: #ffffff;
-  --background-end: #eff6ff;
+  --background: #f8fafc;
   --foreground: #0f172a;
   
-  --accent: #2563eb;          /* Primary Clinical Blue */
-  --accent-cyan: #00a3ff;     /* Accent Cyan */
-  --accent-tint: rgba(37, 99, 235, 0.04);
-  --border-color: #e2e8f0;
-  --secondary: #64748b;
+  --primary: #0f766e;        /* Dark Teal */
+  --primary-light: #ccfbf1;  /* Light Teal Tint */
+  --primary-hover: #0d9488;  /* Hover Teal */
   
-  --card-bg: rgba(255, 255, 255, 0.85);
-  --shadow-color: rgba(37, 99, 235, 0.03);
+  --sidebar-bg: #ffffff;
+  --sidebar-hover: #f0fdfa;  /* Very light teal for sidebar hover */
+  
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --secondary: #64748b;
+  --success: #10b981;
 }
 
 @theme {
-  --color-background-start: var(--background-start);
-  --color-background-end: var(--background-end);
+  --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-accent-cyan: var(--accent-cyan);
-  --color-border: var(--border-color);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-hover: var(--primary-hover);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-card: var(--card);
+  --color-border: var(--border);
   --color-secondary: var(--secondary);
-  --color-card: var(--card-bg);
+  --color-success: var(--success);
   
-  --font-serif: "Nunito", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-html { scroll-behavior: smooth; }
-
-body {
-  background: linear-gradient(180deg, var(--background-start) 0%, var(--background-end) 100%);
-  background-attachment: fixed;
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-/* ── Typography ── */
-.font-display { font-family: var(--font-serif); }
-.font-data    { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+/* ── Utilities ── */
 
-/* ── Premium Cards & Shadow Effects ── */
-.vovy-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(37, 99, 235, 0.08);
-  box-shadow: 0 16px 36px -12px var(--shadow-color), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+.card-shadow {
+  box-shadow: 0 4px 24px -10px rgba(0, 0, 0, 0.04);
+}
+
+/* Base card styling matching the EHR aesthetic */
+.ehr-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px -10px rgba(0, 0, 0, 0.03);
+}
+
+.banner-card {
+  background: linear-gradient(120deg, #f0fdfa 0%, #e0f2fe 100%);
+  border: 1px solid #ccfbf1;
   border-radius: 16px;
-  transition: all 0.25s ease-in-out;
 }
 
-.vovy-card:hover {
-  transform: translateY(-1px);
-  border-color: rgba(0, 163, 255, 0.2);
-  box-shadow: 0 20px 40px -10px rgba(0, 163, 255, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+/* Forms and Inputs */
+input[type="number"], input[type="text"] {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: #0f172a;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
 }
 
-/* ── Gradient Text ── */
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-cyan) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+input[type="number"]:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
 }
 
-/* ── Pill Badges ── */
-.badge-blue {
-  background: rgba(37, 99, 235, 0.06);
-  color: var(--accent);
-  border: 1px solid rgba(37, 99, 235, 0.12);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* ── Primary Button ── */
-.btn-primary {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-cyan) 100%);
-  color: #ffffff;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-primary:hover {
-  opacity: 0.95;
-  transform: translateY(-0.5px);
-  box-shadow: 0 6px 16px rgba(0, 163, 255, 0.3);
-}
-
-/* ── Custom Scrollbar ── */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.08); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.2); }
-
-/* ── Glow Background Circles ── */
-.glow-blur {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(0, 163, 255, 0.04) 0%, rgba(37, 99, 235, 0) 70%);
-  filter: blur(85px);
-  pointer-events: none;
-  z-index: -10;
-}
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
