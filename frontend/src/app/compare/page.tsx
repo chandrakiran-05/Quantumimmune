@@ -198,16 +198,16 @@ function ConfusionGrid({ matrix, classes }: { matrix: number[][]; classes: strin
           return (
             <g key={`${r}-${c}`}>
               <rect x={pad + c * cell} y={pad + r * cell} width={cell - 1.5} height={cell - 1.5} rx="4"
-                fill={v === 0 ? "#FFFAF0" : "#FF6F89"} fillOpacity={op}
-                stroke={isH ? "#2B2420" : "#E8DFD3"} strokeWidth={isH ? 2 : 0.5}
+                fill={v === 0 ? "#f8fafc" : "#2563eb"} fillOpacity={op}
+                stroke={isH ? "#0f172a" : "#e2e8f0"} strokeWidth={isH ? 2 : 0.5}
                 className="cursor-crosshair transition-all duration-150"
                 onMouseEnter={() => setHovered({ r, c, v })} onMouseLeave={() => setHovered(null)} />
-              {v > 0 && <text x={pad + c * cell + cell / 2} y={pad + r * cell + cell / 2 + 3} textAnchor="middle" fill={op > 0.5 ? "#FFF" : "#2B2420"} className="text-[8px] font-data pointer-events-none font-bold">{v}</text>}
+              {v > 0 && <text x={pad + c * cell + cell / 2} y={pad + r * cell + cell / 2 + 3} textAnchor="middle" fill={op > 0.5 ? "#FFF" : "#0f172a"} className="text-[8px] font-data pointer-events-none font-bold">{v}</text>}
             </g>
           );
         }))}
-        {short.map((name, i) => <text key={`y${i}`} x={pad - 8} y={pad + i * cell + cell / 2 + 3} textAnchor="end" fill="#6B6058" className="text-[9px] font-data">{name}</text>)}
-        {short.map((name, i) => <text key={`x${i}`} x={pad + i * cell + cell / 2} y={pad - 8} textAnchor="start" transform={`rotate(-50, ${pad + i * cell + cell / 2}, ${pad - 8})`} fill="#6B6058" className="text-[9px] font-data">{name}</text>)}
+        {short.map((name, i) => <text key={`y${i}`} x={pad - 8} y={pad + i * cell + cell / 2 + 3} textAnchor="end" fill="#64748b" className="text-[9px] font-data">{name}</text>)}
+        {short.map((name, i) => <text key={`x${i}`} x={pad + i * cell + cell / 2} y={pad - 8} textAnchor="start" transform={`rotate(-50, ${pad + i * cell + cell / 2}, ${pad - 8})`} fill="#64748b" className="text-[9px] font-data">{name}</text>)}
       </svg>
       <div className="h-10 mt-2">
         {hovered ? (

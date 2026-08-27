@@ -45,8 +45,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <motion.header
           className={`sticky top-0 z-50 w-full transition-all duration-500 ${
             scrolled
-              ? "bg-[#FFFAF0]/80 backdrop-blur-2xl shadow-[0_1px_3px_rgba(43,36,32,0.06)]"
-              : "bg-[#FFFAF0]/95 backdrop-blur-md"
+              ? "bg-white/80 backdrop-blur-2xl shadow-[0_1px_3px_rgba(15,23,42,0.06)]"
+              : "bg-white/95 backdrop-blur-md"
           }`}
           initial={{ y: -80 }}
           animate={{ y: 0 }}
