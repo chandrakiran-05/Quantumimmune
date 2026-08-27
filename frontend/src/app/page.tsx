@@ -70,11 +70,6 @@ const GROUPS: { label: string; fields: { key: keyof PatientFeatures; label: stri
   },
 ];
 
-const PROXY_IMP: [string, number][] = [
-  ["Anti_CCP", 0.185], ["ANA_titer", 0.142], ["Fasting_Glucose", 0.121],
-  ["CRP", 0.108], ["Complement_C3", 0.095],
-];
-
 const STEPS = [
   "Verifying patient vector integrity",
   "Normalizing via standard scalers",
@@ -156,7 +151,7 @@ export default function PredictPage() {
     setPredicting(true); setError(null); setResults(null); setStep(0);
     for (let i = 0; i < STEPS.length; i++) {
       setStep(i + 1);
-      await new Promise(r => setTimeout(r, 250));
+      await new Promise(r => setTimeout(r, 200));
     }
     try {
       const r = await fetch(`${BACKEND}/predict`, {
@@ -177,24 +172,31 @@ export default function PredictPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="relative space-y-10 py-4">
+      {/* Decorative Glow Backgrounds */}
+      <div className="glow-blur -top-10 -left-10" />
+      <div className="glow-blur top-40 right-10" />
+
       {/* ── Header ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-100">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground font-display">Predictive Diagnostics</h1>
-          <p className="text-xs text-secondary mt-1">Simulated 10-Qubit Quantum Kernel SVM Classification</p>
+          <span className="badge-blue px-2.5 py-1 rounded-full text-[9px] inline-block mb-2">Simulated Quantum Engine</span>
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground font-display">
+            Predictive <span className="gradient-text">Diagnostics</span>
+          </h1>
+          <p className="text-xs text-secondary mt-1">Multi-class SVM classification powered by simulated quantum kernels.</p>
         </div>
 
         {/* Quick Actions (Presets & Upload) */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           {Object.entries(PRESETS).map(([name, cfg]) => (
             <button
               key={name}
               onClick={() => applyPreset(name)}
-              className={`px-3 py-1.5 border text-xs font-semibold rounded-lg flex items-center gap-2 cursor-pointer transition-all duration-200 ${
+              className={`px-3.5 py-2 border text-[11px] font-semibold rounded-xl flex items-center gap-2 cursor-pointer transition-all duration-300 ${
                 activePreset === name
-                  ? "border-accent bg-accent-tint/30 text-accent font-bold"
-                  : "border-border bg-white text-secondary hover:text-foreground hover:border-accent/20"
+                  ? "border-accent bg-accent-tint/10 text-accent font-bold shadow-sm shadow-blue-500/5"
+                  : "border-slate-200 bg-white text-secondary hover:text-foreground hover:border-slate-300"
               }`}
             >
               <span>{cfg.emoji}</span>
@@ -203,8 +205,8 @@ export default function PredictPage() {
           ))}
           <button
             onClick={() => !uploading && fileRef.current?.click()}
-            className={`px-3 py-1.5 border border-dashed rounded-lg text-xs font-semibold flex items-center gap-2 cursor-pointer transition-colors duration-200 ${
-              uploading ? "bg-accent-tint/20 border-accent/40 text-accent" : "bg-white text-accent hover:border-accent/30 hover:bg-accent-tint/5"
+            className={`px-3.5 py-2 border border-dashed rounded-xl text-[11px] font-semibold flex items-center gap-2 cursor-pointer transition-all duration-300 ${
+              uploading ? "bg-accent-tint/20 border-accent/40 text-accent" : "bg-white text-accent hover:border-accent/40 border-slate-300 hover:bg-accent-tint/5"
             }`}
           >
             {uploading ? (
@@ -228,12 +230,12 @@ export default function PredictPage() {
         {showWarning && (
           <motion.div
             initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            className="flex items-start gap-3 p-3 bg-amber-bg/30 border border-amber/20 rounded-xl"
+            className="flex items-start gap-3 p-4 bg-amber-bg/30 border border-amber/25 rounded-2xl"
           >
             <AlertTriangle className="w-4 h-4 text-amber flex-shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-foreground font-data">Report Extracted Successfully</p>
-              <p className="text-xs text-secondary mt-0.5">Please review the highlighted values below before executing the diagnostic prediction.</p>
+              <p className="text-xs text-secondary mt-0.5 font-medium">Please review the highlighted values below before executing the diagnostic prediction.</p>
             </div>
             <button onClick={() => setShowWarning(false)} className="text-secondary hover:text-foreground">
               <X className="w-4 h-4" />
@@ -243,20 +245,20 @@ export default function PredictPage() {
       </AnimatePresence>
 
       {/* Main Grid: Form Left, Results/Status Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Form Panel */}
-        <div className="lg:col-span-7 space-y-6 bg-white border border-border p-6 rounded-2xl">
+        <div className="lg:col-span-7 space-y-6 vovy-card p-6 md:p-8 bg-white/95">
           {GROUPS.map(g => (
-            <div key={g.label} className="space-y-3">
-              <h3 className="text-xs font-bold text-secondary border-b border-border pb-1.5">{g.label}</h3>
+            <div key={g.label} className="space-y-4">
+              <h3 className="text-xs font-bold text-secondary tracking-wide uppercase border-b border-slate-100 pb-2">{g.label}</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {g.fields.map(f => (
-                  <div key={f.key} className="space-y-1">
+                  <div key={f.key} className="space-y-1.5">
                     <div className="flex justify-between items-center min-h-[1.1rem]">
                       <label className="text-[10px] font-semibold text-secondary">{f.label}</label>
                       {extracted[f.key] && (
-                        <span className="bg-amber-bg text-amber border border-amber/20 text-[7px] font-bold font-data px-1 rounded uppercase">Extracted</span>
+                        <span className="bg-amber-bg text-amber border border-amber/20 text-[7px] font-bold font-data px-1 rounded-md uppercase">Extracted</span>
                       )}
                     </div>
                     <input
@@ -264,10 +266,10 @@ export default function PredictPage() {
                       min={f.min} max={f.max} step={f.step}
                       value={form[f.key]}
                       onChange={e => setField(f.key, parseFloat(e.target.value))}
-                      className={`w-full px-3 py-1.5 border rounded-lg text-xs font-data transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent ${
+                      className={`w-full px-3 py-2 border rounded-xl text-xs font-data transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent ${
                         extracted[f.key]
-                          ? "border-amber/40 bg-amber-bg/10 font-bold"
-                          : "border-border bg-[#FFFDF8] hover:border-accent/10"
+                          ? "border-amber/50 bg-amber-bg/10 font-bold"
+                          : "border-slate-200 bg-slate-50/50 hover:border-slate-300"
                       }`}
                     />
                   </div>
@@ -276,11 +278,11 @@ export default function PredictPage() {
             </div>
           ))}
 
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end pt-3">
             <button
               onClick={predict}
               disabled={predicting}
-              className="px-6 py-2.5 bg-accent hover:bg-accent-hover disabled:bg-accent/60 text-white text-xs uppercase tracking-[0.1em] font-bold rounded-lg cursor-pointer transition-colors duration-200 shadow-sm"
+              className="btn-primary px-8 py-3 rounded-xl text-xs uppercase tracking-[0.12em] font-bold cursor-pointer"
             >
               {predicting
                 ? <span className="flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /> Computing…</span>
@@ -297,19 +299,25 @@ export default function PredictPage() {
               <motion.div
                 key="pipeline"
                 initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
-                className="border border-border bg-card p-6 rounded-2xl space-y-4"
+                className="vovy-card p-6 md:p-8 bg-white/95 space-y-5"
               >
-                <span className="text-[10px] font-bold text-secondary font-data uppercase tracking-wider block">Quantum Pipeline Simulation</span>
-                <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-secondary font-data uppercase tracking-wider block">Quantum Pipeline Simulation</span>
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
+                  </span>
+                </div>
+                <div className="space-y-3.5">
                   {STEPS.map((s, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, x: -4 }}
                       animate={{ opacity: i < step ? 1 : 0.25, x: 0 }}
-                      className="flex items-center gap-3"
+                      className="flex items-center gap-3.5"
                     >
                       <div className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                        i < step ? "border-accent bg-accent" : "border-border bg-white"
+                        i < step ? "border-accent bg-accent" : "border-slate-200 bg-white"
                       }`}>
                         {i < step && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
                       </div>
@@ -339,32 +347,32 @@ export default function PredictPage() {
                 className="space-y-6"
               >
                 {/* Primary Prediction */}
-                <div className="border border-border bg-white p-6 rounded-2xl space-y-4">
+                <div className="vovy-card p-6 md:p-8 bg-white/95 space-y-5">
                   <div>
                     <span className="text-[9px] text-secondary font-data uppercase tracking-wider block">Predicted Condition</span>
-                    <h2 className="text-2xl font-bold text-foreground font-display mt-1">
+                    <h2 className="text-2xl font-bold text-foreground font-display mt-1.5 tracking-tight">
                       {results.quantum_kernel_svm?.prediction}
                     </h2>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-card border border-border p-3 rounded-xl text-center">
+                    <div className="bg-slate-50/70 border border-slate-100 p-4 rounded-2xl text-center">
                       <span className="text-[9px] text-secondary font-data block uppercase tracking-wider">Confidence</span>
-                      <span className="text-xl font-bold font-data text-accent mt-0.5 block">
+                      <span className="text-2xl font-bold font-data text-accent mt-1 block">
                         <CountUp target={(results.quantum_kernel_svm?.confidence || 0) * 100} suffix="%" />
                       </span>
                     </div>
-                    <div className="bg-card border border-border p-3 rounded-xl text-center flex flex-col justify-center">
+                    <div className="bg-slate-50/70 border border-slate-100 p-4 rounded-2xl text-center flex flex-col justify-center">
                       <span className="text-[9px] text-secondary font-data block uppercase tracking-wider">Simulation</span>
-                      <span className="text-xs font-bold text-foreground font-data mt-1 block">10 Qubits</span>
+                      <span className="text-xs font-bold text-foreground font-data mt-2 block">10 Qubits</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Probability chart */}
                 {results.quantum_kernel_svm && (
-                  <div className="border border-border bg-white p-5 rounded-2xl space-y-3">
+                  <div className="vovy-card p-6 bg-white/95 space-y-4">
                     <h4 className="text-[10px] uppercase tracking-[0.15em] font-bold text-secondary font-data">Probability Distribution</h4>
-                    <div className="space-y-2.5">
+                    <div className="space-y-3">
                       {Object.entries(results.quantum_kernel_svm.probabilities)
                         .sort((a, b) => b[1] - a[1])
                         .slice(0, 4)
@@ -373,12 +381,12 @@ export default function PredictPage() {
                           return (
                             <div key={cls} className="flex items-center gap-3">
                               <span className={`text-[10px] w-28 truncate flex-shrink-0 ${isPrimary ? "font-bold text-foreground" : "text-secondary"}`}>{cls}</span>
-                              <div className="flex-1 h-1.5 bg-border/20 rounded-full overflow-hidden">
+                              <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                 <motion.div
                                   initial={{ width: 0 }}
                                   animate={{ width: `${val * 100}%` }}
                                   transition={{ delay: idx * 0.05, duration: 0.5 }}
-                                  className={`h-full rounded-full ${isPrimary ? "bg-accent" : "bg-border"}`}
+                                  className={`h-full rounded-full ${isPrimary ? "bg-accent" : "bg-slate-200"}`}
                                 />
                               </div>
                               <span className={`text-[10px] font-data font-bold w-10 text-right ${isPrimary ? "text-accent" : "text-secondary"}`}>
@@ -392,17 +400,17 @@ export default function PredictPage() {
                 )}
 
                 {/* Consistency */}
-                <div className="border border-border bg-white p-5 rounded-2xl space-y-3">
+                <div className="vovy-card p-6 bg-white/95 space-y-4">
                   <h4 className="text-[10px] uppercase tracking-[0.15em] font-bold text-secondary font-data">Cross-Model Comparison</h4>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-3 gap-2.5">
                     {[
                       { label: "QSVM", val: results.quantum_kernel_svm },
                       { label: "SVM (RBF)", val: results.classical_svm },
                       { label: "RF", val: results.random_forest },
                     ].map(c => (
-                      <div key={c.label} className="border border-border bg-card p-3 rounded-lg text-center">
+                      <div key={c.label} className="border border-slate-100 bg-slate-50/40 p-3.5 rounded-2xl text-center">
                         <span className="text-[9px] text-secondary font-data uppercase tracking-wider block">{c.label}</span>
-                        <span className="text-[10px] font-bold text-foreground truncate block mt-1">{c.val?.prediction || "—"}</span>
+                        <span className="text-[11px] font-bold text-foreground truncate block mt-1.5">{c.val?.prediction || "—"}</span>
                         <span className="text-[10px] font-data text-secondary block mt-0.5">{((c.val?.confidence || 0) * 100).toFixed(0)}%</span>
                       </div>
                     ))}
@@ -410,10 +418,10 @@ export default function PredictPage() {
                 </div>
               </motion.div>
             ) : (
-              <div className="border border-border border-dashed bg-card/40 p-8 rounded-2xl text-center space-y-2 h-full flex flex-col justify-center min-h-[200px]">
-                <FlaskConical className="w-8 h-8 text-secondary/40 mx-auto" />
+              <div className="border border-dashed border-slate-200 bg-white/60 p-8 rounded-3xl text-center space-y-3 h-full flex flex-col justify-center min-h-[220px]">
+                <FlaskConical className="w-8 h-8 text-secondary/30 mx-auto" />
                 <p className="text-xs font-semibold text-secondary">Awaiting Diagnostic Input</p>
-                <p className="text-[10px] text-secondary/60 max-w-[200px] mx-auto">Select a preset profile or upload a lab report to generate diagnostic likelihoods.</p>
+                <p className="text-[10px] text-secondary/60 max-w-[200px] mx-auto leading-relaxed">Select a preset profile or upload a lab report to generate diagnostic likelihoods.</p>
               </div>
             )}
           </AnimatePresence>

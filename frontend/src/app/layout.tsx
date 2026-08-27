@@ -1,6 +1,6 @@
 "use client";
 
-import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Inter, Nunito, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -8,9 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FlaskConical, X, Menu } from "lucide-react";
 import "./globals.css";
 
-const fraunces = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], display: "swap" });
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
-const ibmMono = IBM_Plex_Mono({ variable: "--font-ibm-mono", subsets: ["latin"], weight: ["400", "500", "600"], display: "swap" });
+const nunito = Nunito({ variable: "--font-nunito", subsets: ["latin"], weight: ["400", "600", "700", "800"], display: "swap" });
+const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"], weight: ["400", "500", "600"], display: "swap" });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -34,12 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   ];
 
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable} ${ibmMono.variable} h-full`}>
+    <html lang="en" className={`${nunito.variable} ${inter.variable} ${jetbrains.variable} h-full`}>
       <head>
         <title>QuantumImmune Dx — Clinical Diagnostic System</title>
         <meta name="description" content="Quantum-Kernel SVM for early multi-autoimmune disease detection." />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-accent-tint">
+      <body className="min-h-full flex flex-col text-foreground font-sans selection:bg-accent-tint">
 
         {/* ════════════════ HEADER ════════════════ */}
         <motion.header

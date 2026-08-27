@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { AlertCircle, Cpu, Zap, Database, Shield, Layers, Server, FileText, ScanLine } from "lucide-react";
+import { AlertCircle, Cpu, Zap, Layers, Server, FileText, ScanLine } from "lucide-react";
 
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef(null);
@@ -30,9 +30,9 @@ const archSteps = [
 ];
 
 const techStack: { icon: React.ElementType; label: string; val: string }[] = [
-  { icon: Layers, label: "Frontend", val: "Next.js 15 (App Router / React 19)" },
+  { icon: Layers, label: "Frontend", val: "Next.js 16 (App Router)" },
   { icon: Server, label: "Backend", val: "FastAPI (Python 3.13)" },
-  { icon: Cpu, label: "Quantum Sim", val: "PennyLane 0.45.1 (lightning.qubit)" },
+  { icon: Cpu, label: "Quantum Sim", val: "PennyLane (lightning.qubit)" },
   { icon: Zap, label: "ML Solver", val: "scikit-learn 1.3 (OVR Kernel SVM)" },
   { icon: FileText, label: "PDF Parser", val: "pdfplumber 0.11" },
   { icon: ScanLine, label: "OCR", val: "Tesseract & PyTesseract" },
@@ -40,28 +40,34 @@ const techStack: { icon: React.ElementType; label: string; val: string }[] = [
 
 export default function MethodologyPage() {
   return (
-    <div className="space-y-20">
+    <div className="relative space-y-16 py-4">
+      {/* Decorative Glow Backgrounds */}
+      <div className="glow-blur -top-10 -left-10" />
+      <div className="glow-blur top-40 right-10" />
+
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 200, damping: 25 }}
-        className="max-w-3xl space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight text-foreground font-display leading-tight">
-          System methodology & transparency declarations.
+        className="max-w-3xl space-y-3">
+        <span className="badge-blue px-2.5 py-1 rounded-full text-[9px] inline-block mb-1">Architecture & Data</span>
+        <h1 className="text-3xl font-extrabold tracking-tight text-foreground font-display leading-tight">
+          System <span className="gradient-text">Methodology</span> & Transparency
         </h1>
-        <p className="text-secondary text-sm">Technical specifications, models, and honest disclosures of this simulated quantum prototype.</p>
+        <p className="text-secondary text-sm">Technical specifications, models, and declarations of this simulated quantum prototype.</p>
       </motion.div>
 
       {/* Disclosures */}
       <section className="space-y-5">
         <Reveal>
-          <h2 className="text-[11px] uppercase tracking-[0.15em] font-bold text-accent font-data">Disclosures & Constraints</h2>
+          <h2 className="text-[11px] uppercase tracking-[0.15em] font-bold text-secondary font-data">Disclosures & Constraints</h2>
         </Reveal>
         <div className="grid grid-cols-1 gap-3">
           {disclosures.map((d, idx) => (
             <Reveal key={idx} delay={idx * 0.08}>
-              <motion.div whileHover={{ y: -2, boxShadow: "0 8px 30px rgba(43,36,32,0.08)" }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="border border-border bg-card p-5 rounded-2xl space-y-2 cursor-default">
-                <h3 className="text-sm font-bold text-foreground flex items-center gap-2 font-display">
+              <motion.div
+                whileHover={{ y: -2 }}
+                className="vovy-card p-5 space-y-2 bg-white/95 cursor-default"
+              >
+                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                   <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2.5 }}>
                     <AlertCircle className="w-4 h-4 text-accent" />
                   </motion.span>
@@ -79,17 +85,16 @@ export default function MethodologyPage() {
         {/* Architecture */}
         <div className="space-y-5">
           <Reveal>
-            <h2 className="text-[11px] uppercase tracking-[0.15em] font-bold text-accent font-data">Quantum Feature Architecture</h2>
+            <h2 className="text-[11px] uppercase tracking-[0.15em] font-bold text-secondary font-data">Quantum Feature Architecture</h2>
           </Reveal>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {archSteps.map((s, idx) => (
               <Reveal key={idx} delay={idx * 0.07}>
                 <motion.div whileHover={{ x: 4 }} transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  className="flex items-start gap-3 group cursor-default">
-                  <motion.div whileHover={{ scale: 1.15, backgroundColor: "var(--accent-tint)" }}
-                    className="w-7 h-7 rounded-full border-2 border-border flex items-center justify-center flex-shrink-0 text-[10px] font-bold font-data text-secondary group-hover:border-accent group-hover:text-accent transition-colors duration-200">
+                  className="flex items-start gap-4 group cursor-default">
+                  <div className="w-7 h-7 rounded-full border border-slate-200 bg-white flex items-center justify-center flex-shrink-0 text-[10px] font-bold font-data text-secondary group-hover:border-accent group-hover:text-accent transition-colors duration-300">
                     {idx + 1}
-                  </motion.div>
+                  </div>
                   <div>
                     <span className="text-xs font-bold text-foreground group-hover:text-accent transition-colors duration-200">{s.step}</span>
                     <p className="text-[11px] text-secondary leading-relaxed mt-0.5">{s.desc}</p>
@@ -103,21 +108,21 @@ export default function MethodologyPage() {
         {/* Tech Stack */}
         <div className="space-y-5">
           <Reveal>
-            <h2 className="text-[11px] uppercase tracking-[0.15em] font-bold text-accent font-data">Technology Stack</h2>
+            <h2 className="text-[11px] uppercase tracking-[0.15em] font-bold text-secondary font-data">Technology Stack</h2>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="border border-border bg-white overflow-hidden rounded-2xl divide-y divide-border">
+            <div className="vovy-card bg-white/95 overflow-hidden divide-y divide-slate-100">
               {techStack.map((item, idx) => (
                 <motion.div key={idx} initial={{ opacity: 0, x: 10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                   transition={{ delay: idx * 0.06, type: "spring", stiffness: 300, damping: 25 }}
-                  whileHover={{ backgroundColor: "rgba(255,111,137,0.04)" }}
+                  whileHover={{ backgroundColor: "rgba(37, 99, 235, 0.02)" }}
                   className="flex items-center gap-4 p-4 group cursor-default transition-colors duration-200">
-                  <div className="w-9 h-9 rounded-xl bg-card flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
+                  <div className="w-9 h-9 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
                     <item.icon className="w-4.5 h-4.5 text-accent" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-semibold text-foreground group-hover:text-accent transition-colors duration-200">{item.label}</span>
-                    <span className="text-[10px] text-secondary font-data block">{item.val}</span>
+                    <span className="text-[10px] text-secondary font-data block mt-0.5">{item.val}</span>
                   </div>
                 </motion.div>
               ))}
